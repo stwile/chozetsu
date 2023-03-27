@@ -16,7 +16,7 @@ jobs:
         with:
           php-version: '8.2'
           coverage: pcov
-          tools: composer:v2, cs2pr, phpcs, phpstan
+          tools: composer:v2, cs2pr, phpcs, phpstan, phpmd
           extensions: mbstring, xdebug
 
       - name: Cache vendor
@@ -42,7 +42,12 @@ jobs:
       - name: Show PHPCS results in PR
         run: cs2pr ./phpcs-report.xml
 
+      - name: PHPMD
+        continue-on-error: true
+        run: phpmd . phpmd.xml --exclude 'vendor/*'
+
       - name: PHPStan
+        continue-on-error: true
         run: phpstan analyse --error-format=checkstyle --configuration=phpstan.neon | cs2pr
 
       - name: Inspection
