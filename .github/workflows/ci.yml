@@ -1,0 +1,83 @@
+name: ci
+
+on: pull_request
+
+jobs:
+  lint:
+    name: Run PHP code lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: pcov
+          tools: composer:v2, cs2pr, phpcs, phpstan
+          extension-csv: mbstring, xdebug
+
+      - name: Cache vendor
+        id: cache
+        uses: actions/cache@v1
+        with:
+          path: ./vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('./composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Composer install
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: composer install -n --prefer-dist
+
+      - name: Composer Dump Autoload
+        run: composer dump-autoload -q
+
+      - name: PHPCS
+        continue-on-error: true
+        run: touch ./phpcs-report.xml | phpcs --report-full --report-checkstyle=./phpcs-report.xml --standard=phpcs.xml -v --report=checkstyle src tests
+
+      - name: Show PHPCS results in PR
+        run: cs2pr ./phpcs-report.xml
+
+      - name: PHPStan
+        run: phpstan analyse --error-format=checkstyle --configuration=phpstan.neon | cs2pr
+
+      - name: Inspection
+        run: ./vendor/bin/infection -s --debug --logger-github -j2
+        
+      - name: Execute Test
+        run: |
+          touch ./coverage/coverage.log
+          ./vendor/bin/phpunit ./tests --coverage-text="./coverage/coverage.log" --colors=never
+          cat ./coverage/coverage.log
+      - name: Cat Test Result
+        run: |
+          cat ./coverage/coverage.log
+        if: ${{ failure() }}
+
+      - name: Sed Coverage Report
+        run: |
+          sed -E "s/"$'\E'"\[([0-9]{1,2}(;[0-9]{1,2})*)?m//g" | \
+          grep "Code Coverage Report:" -A6 ./coverage/coverage.log | sed -e "s/^ *//" | sed -e "s/ *$//" | sed -e "/^ *$/d" > coverage/summary.log
+      - name: Read coverage summary
+        id: coverage-summary
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./coverage/summary.log
+
+      - name: Comment Coverage Summary
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: coverage-summary
+          message: |
+            ## Coverage Summary
+            ${{ steps.coverage-summary.outputs.content }}
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: ./coverage/summary.log
