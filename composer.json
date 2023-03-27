@@ -1,0 +1,10 @@
+{
+    "name": "stwile/chozetsu",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/",
+            "Tests\\": "tests/"
+        }
+    },
+    "require": {}
+}
