@@ -6,8 +6,6 @@ namespace App\Part5;
 
 class ArticleOperation
 {
-    private Article $article;
-
     public function draft(Writer $writer): void
     {
     }
