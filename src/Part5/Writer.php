@@ -6,5 +6,4 @@ namespace App\Part5;
 
 class Writer
 {
-
 }

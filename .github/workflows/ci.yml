@@ -7,7 +7,7 @@ jobs:
     name: Run PHP code lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
@@ -16,12 +16,12 @@ jobs:
         with:
           php-version: '8.2'
           coverage: pcov
-          tools: composer:v2, cs2pr, phpcs, phpstan
-          extension-csv: mbstring, xdebug
+          tools: composer:v2, cs2pr, phpcs, phpstan, phpmd
+          extensions: mbstring, xdebug
 
       - name: Cache vendor
         id: cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ./vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('./composer.lock') }}
@@ -42,12 +42,17 @@ jobs:
       - name: Show PHPCS results in PR
         run: cs2pr ./phpcs-report.xml
 
+      - name: PHPMD
+        continue-on-error: true
+        run: phpmd . phpmd.xml --exclude 'vendor/*'
+
       - name: PHPStan
+        continue-on-error: true
         run: phpstan analyse --error-format=checkstyle --configuration=phpstan.neon | cs2pr
 
       - name: Inspection
         run: ./vendor/bin/infection -s --debug --logger-github -j2
-        
+
       - name: Execute Test
         run: |
           touch ./coverage/coverage.log
