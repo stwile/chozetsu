@@ -13,6 +13,12 @@
     "squizlabs/php_codesniffer": "^3.7",
     "phpunit/phpunit": "^10.0",
     "phpmd/phpmd": "^2.13",
-    "phpstan/phpstan": "^1.10"
+    "phpstan/phpstan": "^1.10",
+    "infection/infection": "^0.26.19"
+  },
+  "config": {
+    "allow-plugins": {
+      "infection/extension-installer": true
+    }
   }
 }
