@@ -2,10 +2,12 @@
 
 readonly PHPCS_BIN=./vendor/bin/phpcs
 readonly PHPMD_BIN=./vendor/bin/phpmd
+readonly PHPSTAN_BIN=./vendor/bin/phpstan
 readonly PHPCS_CODING_STANDARD="./phpcs.xml"
 readonly PHPCS_IGNORE=
 readonly TMP_STAGING="./.tmp_staging"
 readonly PHPMD_RULES="./phpmd.xml"
+readonly PHPSTAN_CONFIG="./phpstan.neon"
 
 # simple check if code sniffer is set up correctly
 if [ ! -x $PHPCS_BIN ]; then
@@ -142,4 +144,20 @@ fi
      exit $PHPMD_RETVAL
  fi
 
- exit
+echo "$PHPSTAN_BIN analyse -c $PHPSTAN_CONFIG $TMP_STAGING"
+PHPSTAN_OUTPUT=$($PHPSTAN_BIN analyse -c $PHPSTAN_CONFIG $TMP_STAGING)
+PHPSTAN_RETVAL=$?
+
+if [ $PHPSTAN_RETVAL -ne 0 ]; then
+    if [ "$FILE_OUTPUT" == "1" ]; then
+        echo "$PHPSTAN_OUTPUT"
+        echo "$PHPSTAN_OUTPUT" > larastan.log
+    else
+        echo "$PHPSTAN_OUTPUT"
+    fi
+    # delete temporary copy of staging area
+    rm -rf $TMP_STAGING
+    exit $PHPSTAN_RETVAL
+fi
+
+exit
