@@ -8,8 +8,15 @@ class PercentileTaskDisplay extends TaskDisplay
 {
     public function show(): string
     {
-        $percent = (int) (100.0 * $this->remains / $this->total);
         $parent = parent::show();
-        return "{$parent} ({$percent} %)";
+        return "{$parent} ({$this->getPercent()} %)";
+    }
+
+    private function getPercent(): int
+    {
+        if ($this->total !== 0) {
+            return (int) (100.0 * $this->remains / $this->total);
+        }
+        return 100;
     }
 }
