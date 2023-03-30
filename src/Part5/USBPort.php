@@ -11,13 +11,8 @@ class USBPort
     ) {
     }
 
-    public function plugKeyboard(USBKeyboard $keyboard): void
+    public function plug(AbstractUSBDevice $device): void
     {
-        $keyboard->connect($this->internal_bus);
-    }
-
-    public function plugMouse(USBMouse $mouse): void
-    {
-        $mouse->connect($this->internal_bus);
+        $device->connect($this->internal_bus);
     }
 }
