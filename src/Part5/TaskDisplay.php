@@ -7,8 +7,8 @@ namespace App\Part5;
 class TaskDisplay
 {
     public function __construct(
-        private int $total,
-        private int $remains,
+        protected int $total,
+        protected int $remains,
     ) {
     }
 
