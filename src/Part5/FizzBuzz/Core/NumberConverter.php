@@ -10,7 +10,7 @@ class NumberConverter
      * @param ReplaceRuleInterface[] $rules
      */
     public function __construct(
-        protected array $rules,
+        readonly protected array $rules,
     ) {
     }
 

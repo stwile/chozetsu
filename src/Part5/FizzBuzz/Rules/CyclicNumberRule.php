@@ -12,8 +12,8 @@ use App\Part5\FizzBuzz\Core\ReplaceRuleInterface;
 class CyclicNumberRule implements ReplaceRuleInterface
 {
     public function __construct(
-        protected int $base,
-        protected string $replacement,
+        readonly protected int $base,
+        readonly protected string $replacement,
     ) {
     }
 
