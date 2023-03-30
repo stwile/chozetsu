@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Part5;
 
-class USBMouse extends AbstractUSBDevice
+use App\Part5\Operation\PointerDeviceInterface;
+
+class USBMouse extends AbstractUSBDevice implements PointerDeviceInterface
 {
     public function connect(InternalBus $bus): void
     {
