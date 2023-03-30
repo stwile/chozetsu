@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Part5;
 
-class USBKeyboard
+class USBKeyboard extends AbstractUSBDevice
 {
     public function connect(InternalBus $bus): void
     {
