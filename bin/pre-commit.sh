@@ -128,21 +128,21 @@ if [ $PHPCS_RETVAL -ne 0 ]; then
     exit $PHPCS_RETVAL
 fi
 
- echo "$PHPMD_BIN $STAGED_FILES text $PHPMD_RULES"
- PHPMD_OUTPUT=$($PHPMD_BIN $STAGED_FILES text $PHPMD_RULES)
- PHPMD_RETVAL=$?
+echo "$PHPMD_BIN $TMP_STAGING text $PHPMD_RULES"
+PHPMD_OUTPUT=$($PHPMD_BIN $TMP_STAGING text $PHPMD_RULES)
+PHPMD_RETVAL=$?
 
- if [ $PHPMD_RETVAL -ne 0 ]; then
-     if [ "$FILE_OUTPUT" == "1" ]; then
-         echo "$PHPMD_OUTPUT"
-         echo "$PHPMD_OUTPUT" > phpmd.log
-     else
-         echo "$PHPMD_OUTPUT"
-     fi
-     # delete temporary copy of staging area
-     rm -rf $TMP_STAGING
-     exit $PHPMD_RETVAL
- fi
+if [ $PHPMD_RETVAL -ne 0 ]; then
+    if [ "$FILE_OUTPUT" == "1" ]; then
+        echo "$PHPMD_OUTPUT"
+        echo "$PHPMD_OUTPUT" > phpmd.log
+    else
+        echo "$PHPMD_OUTPUT"
+    fi
+    # delete temporary copy of staging area
+    rm -rf $TMP_STAGING
+    exit $PHPMD_RETVAL
+fi
 
 echo "$PHPSTAN_BIN analyse -c $PHPSTAN_CONFIG $TMP_STAGING"
 PHPSTAN_OUTPUT=$($PHPSTAN_BIN analyse -c $PHPSTAN_CONFIG $TMP_STAGING)

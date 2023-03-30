@@ -10,10 +10,6 @@
         My custom rule set that checks my code...
     </description>
 
-    <rule ref="./codesize.xml"/>
-    <rule ref="./cleancode.xml"/>
-    <rule ref="./controversial.xml"/>
-    <rule ref="./design.xml"/>
-    <rule ref="./naming.xml"/>
-    <rule ref="./unusedcode.xml"/>
+    <rule ref="rulesets/codesize.xml"/>
+    <rule ref="rulesets/unusedcode.xml"/>
 </ruleset>
