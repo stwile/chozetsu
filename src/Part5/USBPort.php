@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Part5;
 
+use App\Part5\Connection\USBDeviceInterface;
+
 class USBPort
 {
     public function __construct(
@@ -11,7 +13,7 @@ class USBPort
     ) {
     }
 
-    public function plug(AbstractUSBDevice $device): void
+    public function plug(USBDeviceInterface $device): void
     {
         $device->connect($this->internal_bus);
     }
