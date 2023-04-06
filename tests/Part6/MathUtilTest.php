@@ -44,15 +44,32 @@ class MathUtilTest extends TestCase
     /** @test */
     public function saturate(): void
     {
-        $math_stab = $this->createMock(Math::class);
-        $math_util = new MathUtil($math_stab);
+        $math_stab = $this->createMock(originalClassName: Math::class);
+        $math_util = new MathUtil(math: $math_stab);
 
-        $math_stab->method('max')
-            ->willReturn(value: 2);
-        $math_stab->method('min')
+        // 少なくとも1回 max が引数 2, 1 で呼ばれ、2を返す
+        $math_stab->expects($this->atLeastOnce())
+            ->method(constraint: 'max')
+            ->with(
+                $this->equalTo(value: 2),
+                $this->equalTo(value: 1),
+            )
             ->willReturn(value: 2);
 
-        $result = $math_util->saturate(2, 1, 3);
+        // 少なくとも 1 回 min が引数2, 3 で呼ばれ、2 を返す
+        $math_stab->expects($this->atLeastOnce())
+            ->method(constraint: 'min')
+            ->with(
+                $this->equalTo(value: 2),
+                $this->equalTo(value: 3),
+            )
+            ->willReturn(value: 2);
+
+        $result = $math_util->saturate(
+            value: 2,
+            min_value: 1,
+            max_value: 3,
+        );
 
         $this->assertSame(
             expected: 2,
