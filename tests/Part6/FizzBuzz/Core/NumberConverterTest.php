@@ -14,9 +14,7 @@ class NumberConverterTest extends TestCase
     {
         $fizz_buzz = new NumberConverter();
 
-        $this->assertSame(
-            expected: '1',
-            actual: $fizz_buzz->convert(),
-        );
+        $this->assertSame(expected: '1', actual: $fizz_buzz->convert(1));
+        $this->assertSame(expected: '2', actual: $fizz_buzz->convert(2));
     }
 }
