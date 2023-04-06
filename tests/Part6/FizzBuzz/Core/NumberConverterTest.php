@@ -19,5 +19,9 @@ class NumberConverterTest extends TestCase
         $this->assertSame(expected: 'Fizz', actual: $fizz_buzz->convert(3));
         $this->assertSame(expected: '4', actual: $fizz_buzz->convert(4));
         $this->assertSame(expected: 'Buzz', actual: $fizz_buzz->convert(5));
+        $this->assertSame(expected: 'Fizz', actual: $fizz_buzz->convert(6));
+        $this->assertSame(expected: 'Buzz', actual: $fizz_buzz->convert(10));
+        $this->assertSame(expected: 'FizzBuzz', actual: $fizz_buzz->convert(15));
+        $this->assertSame(expected: 'FizzBuzz', actual: $fizz_buzz->convert(30));
     }
 }
