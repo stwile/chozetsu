@@ -40,4 +40,23 @@ class MathUtilTest extends TestCase
             ),
         );
     }
+
+    /** @test */
+    public function saturate(): void
+    {
+        $math_stab = $this->createMock(Math::class);
+        $math_util = new MathUtil($math_stab);
+
+        $math_stab->method('max')
+            ->willReturn(value: 2);
+        $math_stab->method('min')
+            ->willReturn(value: 2);
+
+        $result = $math_util->saturate(2, 1, 3);
+
+        $this->assertSame(
+            expected: 2,
+            actual: $result,
+        );
+    }
 }
